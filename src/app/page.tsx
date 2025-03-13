@@ -118,7 +118,7 @@ export default function Page() {
                 ${
                   isClaimed
                     ? "bg-white text-black cursor-not-allowed"
-                    : "bg-[#0AFF9D] hover:bg-purple-700 active:scale-95"
+                    : "bg-[#0AFF9D] hover:bg-[#036940] active:scale-95"
                 }
               `}
             >
