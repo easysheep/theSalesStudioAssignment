@@ -184,8 +184,8 @@ import { faTicket } from "@fortawesome/free-solid-svg-icons";
 export default function Page() {
   const [showIntro, setShowIntro] = useState(true);
   const [isClaimed, setIsClaimed] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(60); // 60 seconds for demo purposes
-  const totalTime = 60; // Total duration in seconds
+  const [timeLeft, setTimeLeft] = useState(10); // 60 seconds for demo purposes
+  const totalTime = 10; // Total duration in seconds
   const tickingSound = useRef<HTMLAudioElement | null>(null);
   const [showCard, setShowCard] = useState(false);
   const [showSlideText, setShowSlideText] = useState(false);
@@ -230,6 +230,9 @@ export default function Page() {
     }
     if (timeLeft === 0) {
       setIsClaimed(false);
+      setTimeout(() => {
+        setShowSlideText(false);
+      }, 1000); 
       if (tickingSound.current) {
         tickingSound.current.pause();
         tickingSound.current.currentTime = 0;
@@ -330,7 +333,7 @@ export default function Page() {
             <button
               onClick={buttonClicked}
               disabled={isClaimed}
-              className={`h-72 w-72 text-xl text-black font-bold rounded-full shadow-lg transition-all cursor-pointer flex items-center justify-center text-center ${
+              className={`h-72 w-72  p-3 text-xl text-black font-bold rounded-full shadow-lg transition-all cursor-pointer flex items-center justify-center text-center ${
                 isClaimed
                   ? "bg-transparent text-white cursor-not-allowed"
                   : "bg-[#0AFF9D] hover:bg-[#036940] active:scale-95"
@@ -352,7 +355,7 @@ export default function Page() {
                 animate={{ x: -100, y: 0, opacity: 1 }}
                 exit={{ x: -100, y: "100vh", opacity: 0 }}
                 transition={{ duration: 2.5 }}
-                className="fixed bottom-0 left-25 p-4 text-white bg-[#0AFF9D] rounded shadow-lg h-[400px] w-[500px]"
+                className="fixed bottom-0 left-25 p-4 text-white bg-[#0AFF9D] rounded shadow-lg h-[200px] w-[500px]"
               >
                 <p className="text-white font-extrabold text-5xl">
                   Congratulations, <br></br>Coupon <br></br>Claimed!
@@ -364,17 +367,24 @@ export default function Page() {
           <AnimatePresence>
             {showSlideText && (
               <motion.div
+                key="slideText"
                 initial={{ x: "100vw", opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: "100vw", opacity: 0 }}
                 transition={{ duration: 1 }}
                 className="fixed bottom-5 right-10 p-4 bg-transparent text-white rounded shadow-lg h-[500px] w-[400px]"
               >
-                <p className="">
-                  <p className="text-[#0AFF9D] text-6xl font-extrabold">Wait for the cooldown,</p>
-                  <p className="text-white text-5xl font-extrabold">to claim coupon again</p>
-                  <p className="text-[#0AFF9D] text-4xl font-extrabold">Stay Tuned!</p>
-                </p>
+                <div className="">
+                  <p className="text-[#0AFF9D] text-6xl font-extrabold">
+                    Wait for the cooldown,
+                  </p>
+                  <p className="text-white text-5xl font-extrabold">
+                    to claim coupon again
+                  </p>
+                  <p className="text-[#0AFF9D] text-4xl font-extrabold">
+                    Stay Tuned!
+                  </p>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
