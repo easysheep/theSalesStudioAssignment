@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { faTicket } from "@fortawesome/free-solid-svg-icons";
+import "./globals.css";
 
 export default function Home() {
   const [ticketCount, setTicketCount] = useState<number>(0);
@@ -16,7 +17,6 @@ export default function Home() {
   const [showCard, setShowCard] = useState(false);
   const [showSlideText, setShowSlideText] = useState(false);
   const [assignedCoupon, setAssignedCoupon] = useState<string | null>(null);
-
   useEffect(() => {
     tickingSound.current = new Audio("/ticking.mp3");
   }, []);
@@ -105,7 +105,7 @@ export default function Home() {
           onAnimationComplete={() => setShowIntro(false)}
         >
           <p>Welcome to,</p>
-          <p className="font-extrabold text-6xl text-black tracking-wider mt-2">
+          <p className="font-extrabold text-6xl text-black tracking-wider mt-2 ">
             Coupon County
           </p>
         </motion.div>
@@ -142,9 +142,9 @@ export default function Home() {
             <FontAwesomeIcon icon={faGithub} />
           </Link>
 
-          <h1 className="absolute top-10 text-4xl font-bold text-center">
+          {/* <h1 className="absolute top-10 text-4xl text-center font-bold">
             Coupon County
-          </h1>
+          </h1> */}
 
           <div className="relative flex items-center justify-center">
             {isClaimed && (
@@ -178,17 +178,32 @@ export default function Home() {
             <button
               onClick={claimCoupon}
               disabled={isClaimed}
-              className={`h-72 w-72 p-3 text-xl text-black font-bold rounded-full shadow-lg transition-all cursor-pointer flex items-center justify-center text-center ${
+              className={`h-72 w-72 p-3 text-xl text-white font-bold rounded-full shadow-lg transition-all cursor-pointer flex items-center justify-center text-center ${
                 isClaimed
                   ? "bg-transparent text-white cursor-not-allowed"
                   : "bg-[#0AFF9D] hover:bg-[#036940] active:scale-95"
               }`}
             >
-              {isClaimed
-                ? `${Math.floor(timeLeft / 60)}:${String(
-                    timeLeft % 60
-                  ).padStart(2, "0")}`
-                : "Claim Your Free Coupon Here"}
+              {isClaimed ? (
+                <div className="flex items-center justify-center">
+                  <p className="text-5xl font-extrabold font-outfit">
+                    {Math.floor(timeLeft / 60)}:
+                    {String(timeLeft % 60).padStart(2, "0")}
+                  </p>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center">
+                  <span className="text-5xl font-extrabold font-outfit">
+                    Claim
+                  </span>
+                  <span className="text-5xl font-extrabold font-outfit">
+                    Your
+                  </span>
+                  <span className="text-5xl font-extrabold font-outfit">
+                    Coupon
+                  </span>
+                </div>
+              )}
             </button>
           </div>
 

@@ -1,5 +1,7 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Monoton&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Monoton&family=Outfit:wght@100..900&family=Ponomar&display=swap');
+
+
 
 .bg-dots {
   background-color: black;
