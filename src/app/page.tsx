@@ -238,10 +238,11 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { faTicket } from "@fortawesome/free-solid-svg-icons";
 
 export default function Home() {
+  const [ticketCount, setTicketCount] = useState<number>(0);
   const [showIntro, setShowIntro] = useState(true);
   const [isClaimed, setIsClaimed] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(10); // demo: 10 seconds cooldown for demo
-  const totalTime = 10; // Total duration in seconds for the cooldown timer
+  const [timeLeft, setTimeLeft] = useState(60); // demo: 10 seconds cooldown for demo
+  const totalTime = 60; // Total duration in seconds for the cooldown timer
   const tickingSound = useRef<HTMLAudioElement | null>(null);
   const [showCard, setShowCard] = useState(false);
   const [showSlideText, setShowSlideText] = useState(false);
@@ -274,6 +275,8 @@ export default function Home() {
       setIsClaimed(true);
       setTimeLeft(totalTime);
       setShowCard(true);
+      setTicketCount(data.totalClaims);
+
   
       // Start playing ticking sound, etc.
       if (tickingSound.current) {
@@ -347,7 +350,7 @@ export default function Home() {
                 style={{ color: "#0AFF9D", height: "35px" }}
               />
             </motion.div>
-            <p className="flex h-full items-center text-2xl">3x</p>
+            <p className="flex h-full items-center text-2xl">{ticketCount}x</p>
           </button>
 
           {/* Document Button - Top Right */}
@@ -428,11 +431,11 @@ export default function Home() {
                 animate={{ x: -100, y: 0, opacity: 1 }}
                 exit={{ x: -100, y: "100vh", opacity: 0 }}
                 transition={{ duration: 2.5 }}
-                className="fixed bottom-0 left-25 p-4 text-white bg-[#0AFF9D] rounded shadow-lg h-[200px] w-[500px]"
+                className="fixed bottom-0 left-25 p-4 text-white bg-[#0AFF9D] rounded shadow-lg h-[230px] w-[500px]"
               >
                 <p className="text-white font-extrabold text-5xl">
                   Congratulations, <br />
-                  Coupon {assignedCoupon} <br />
+                  {assignedCoupon} <br />
                   Claimed!
                 </p>
               </motion.div>
