@@ -1,6 +1,6 @@
 // "use client";
 // import { useState, useEffect, useRef } from "react";
-// import { motion } from "framer-motion";
+// import { motion, AnimatePresence } from "framer-motion";
 // import Link from "next/link";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { faGithub } from "@fortawesome/free-brands-svg-icons";
@@ -9,20 +9,23 @@
 // export default function Page() {
 //   const [showIntro, setShowIntro] = useState(true);
 //   const [isClaimed, setIsClaimed] = useState(false);
-//   const [timeLeft, setTimeLeft] = useState(60); // 10 minutes in seconds
-//   const totalTime = 60; // Total duration (10 minutes)
+//   const [timeLeft, setTimeLeft] = useState(10); // 60 seconds for demo purposes
+//   const totalTime = 10; // Total duration in seconds
 //   const tickingSound = useRef<HTMLAudioElement | null>(null);
+//   const [showCard, setShowCard] = useState(false);
+//   const [showSlideText, setShowSlideText] = useState(false);
 
 //   // Initialize ticking sound
 //   useEffect(() => {
-//     tickingSound.current = new Audio("/ticking.mp3"); // Make sure this file exists in /public
+//     tickingSound.current = new Audio("/ticking.mp3"); // Ensure this file exists in /public
 //   }, []);
 
-//   // Function to start the timer
+//   // Function to start the timer and show the rising card
 //   const buttonClicked = () => {
 //     if (!isClaimed) {
 //       setIsClaimed(true);
 //       setTimeLeft(totalTime);
+//       setShowCard(true); // Show the rising card
 
 //       // Start playing ticking sound
 //       if (tickingSound.current) {
@@ -31,6 +34,14 @@
 //           .play()
 //           .catch((err) => console.error("Audio play failed:", err));
 //       }
+//       // Hide the card after 5 seconds and then show slide text after card exit animation
+//       setTimeout(() => {
+//         setShowCard(false);
+//         // Delay before showing slide text (adjust as needed)
+//         setTimeout(() => {
+//           setShowSlideText(true);
+//         }, 1000);
+//       }, 5000);
 //     }
 //   };
 
@@ -40,13 +51,13 @@
 //       const timer = setInterval(() => {
 //         setTimeLeft((prevTime) => prevTime - 1);
 //       }, 1000);
-
 //       return () => clearInterval(timer);
 //     }
-
 //     if (timeLeft === 0) {
 //       setIsClaimed(false);
-//       // Stop ticking sound when timer ends
+//       setTimeout(() => {
+//         setShowSlideText(false);
+//       }, 1000); 
 //       if (tickingSound.current) {
 //         tickingSound.current.pause();
 //         tickingSound.current.currentTime = 0;
@@ -78,6 +89,7 @@
 //       {/* Main UI */}
 //       {!showIntro && (
 //         <div className="relative w-full h-full flex flex-col items-center justify-center">
+//           {/* Left Top - Ticket Counter */}
 //           <button className="absolute top-5 left-0 mx-2 border-0 px-3 py-2 text-[#0AFF9D] flex gap-3">
 //             <motion.div
 //               animate={{ rotate: 360 }}
@@ -85,20 +97,16 @@
 //             >
 //               <FontAwesomeIcon
 //                 icon={faTicket}
-//                 style={{
-//                   color: "#0AFF9D",
-//                   height: "35px",
-//                 }}
+//                 style={{ color: "#0AFF9D", height: "35px" }}
 //               />
 //             </motion.div>
-
 //             <p className="flex h-full items-center text-2xl">3x</p>
 //           </button>
+
 //           {/* Document Button - Top Right */}
 //           <button className="absolute top-5 right-20 mx-2 border-2 border-[#0AFF9D] px-3 py-2 text-[#0AFF9D] cursor-pointer hover:text-white hover:border-white">
 //             Document
 //           </button>
-
 //           <button className="absolute top-5 right-10 border-2 border-[#0AFF9D] px-3 py-2 text-[#0AFF9D] cursor-pointer hover:text-white hover:border-white">
 //             <Link
 //               href="https://github.com/easysheep/theSalesStudioAssignment"
@@ -123,7 +131,6 @@
 //                 className="absolute h-80 w-80 transform -rotate-90"
 //                 viewBox="0 0 100 100"
 //               >
-//                 {/* Background Circle */}
 //                 <circle
 //                   cx="50"
 //                   cy="50"
@@ -132,7 +139,6 @@
 //                   strokeWidth="5"
 //                   fill="none"
 //                 />
-//                 {/* Progress Circle (Filling Effect) */}
 //                 <motion.circle
 //                   cx="50"
 //                   cy="50"
@@ -140,7 +146,7 @@
 //                   stroke="#0AFF9D"
 //                   strokeWidth="5"
 //                   fill="none"
-//                   strokeDasharray="282" // Circumference of the circle (2 * π * r)
+//                   strokeDasharray="282"
 //                   strokeDashoffset="282"
 //                   animate={{ strokeDashoffset: 282 - (progress / 100) * 282 }}
 //                   transition={{ duration: 1, ease: "linear" }}
@@ -152,13 +158,11 @@
 //             <button
 //               onClick={buttonClicked}
 //               disabled={isClaimed}
-//               className={`h-72 w-72 text-xl text-black font-bold rounded-full shadow-lg transition-all cursor-pointer flex items-center justify-center text-center
-//                 ${
-//                   isClaimed
-//                     ? "bg-transparent text-white cursor-not-allowed"
-//                     : "bg-[#0AFF9D] hover:bg-[#036940] active:scale-95"
-//                 }
-//               `}
+//               className={`h-72 w-72  p-3 text-xl text-black font-bold rounded-full shadow-lg transition-all cursor-pointer flex items-center justify-center text-center ${
+//                 isClaimed
+//                   ? "bg-transparent text-white cursor-not-allowed"
+//                   : "bg-[#0AFF9D] hover:bg-[#036940] active:scale-95"
+//               }`}
 //             >
 //               {isClaimed
 //                 ? `${Math.floor(timeLeft / 60)}:${String(
@@ -167,11 +171,63 @@
 //                 : "Claim Your Free Coupon Here"}
 //             </button>
 //           </div>
+
+//           {/* Rising Card Animation */}
+//           <AnimatePresence>
+//             {showCard && (
+//               <motion.div
+//                 initial={{ x: -100, y: "100vh", opacity: 0 }}
+//                 animate={{ x: -100, y: 0, opacity: 1 }}
+//                 exit={{ x: -100, y: "100vh", opacity: 0 }}
+//                 transition={{ duration: 2.5 }}
+//                 className="fixed bottom-0 left-25 p-4 text-white bg-[#0AFF9D] rounded shadow-lg h-[200px] w-[500px]"
+//               >
+//                 <p className="text-white font-extrabold text-5xl">
+//                   Congratulations, <br></br>Coupon <br></br>Claimed!
+//                 </p>
+//               </motion.div>
+//             )}
+//           </AnimatePresence>
+
+//           <AnimatePresence>
+//             {showSlideText && (
+//               <motion.div
+//                 key="slideText"
+//                 initial={{ x: "100vw", opacity: 0 }}
+//                 animate={{ x: 0, opacity: 1 }}
+//                 exit={{ x: "100vw", opacity: 0 }}
+//                 transition={{ duration: 1 }}
+//                 className="fixed bottom-5 right-10 p-4 bg-transparent text-white rounded shadow-lg h-[500px] w-[400px]"
+//               >
+//                 <div className="">
+//                   <p className="text-[#0AFF9D] text-6xl font-extrabold">
+//                     Wait for the cooldown,
+//                   </p>
+//                   <p className="text-white text-5xl font-extrabold">
+//                     to claim coupon again
+//                   </p>
+//                   <p className="text-[#0AFF9D] text-4xl font-extrabold">
+//                     Stay Tuned!
+//                   </p>
+//                 </div>
+//               </motion.div>
+//             )}
+//           </AnimatePresence>
 //         </div>
 //       )}
 //     </div>
 //   );
 // }
+
+
+
+
+
+
+
+
+
+
 
 "use client";
 import { useState, useEffect, useRef } from "react";
@@ -181,44 +237,60 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { faTicket } from "@fortawesome/free-solid-svg-icons";
 
-export default function Page() {
+export default function Home() {
   const [showIntro, setShowIntro] = useState(true);
   const [isClaimed, setIsClaimed] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(10); // 60 seconds for demo purposes
-  const totalTime = 10; // Total duration in seconds
+  const [timeLeft, setTimeLeft] = useState(10); // demo: 10 seconds cooldown for demo
+  const totalTime = 10; // Total duration in seconds for the cooldown timer
   const tickingSound = useRef<HTMLAudioElement | null>(null);
   const [showCard, setShowCard] = useState(false);
   const [showSlideText, setShowSlideText] = useState(false);
+  const [assignedCoupon, setAssignedCoupon] = useState<string | null>(null);
 
   // Initialize ticking sound
   useEffect(() => {
     tickingSound.current = new Audio("/ticking.mp3"); // Ensure this file exists in /public
   }, []);
 
-  // Function to start the timer and show the rising card
-  const buttonClicked = () => {
-    if (!isClaimed) {
+  // Function to claim coupon via API
+  const claimCoupon = async () => {
+    try {
+      const res = await fetch("/api/claim-coupon", { method: "POST" });
+      let data;
+      try {
+        data = await res.json();
+      } catch (jsonError) {
+        // If JSON parsing fails, log the raw text for debugging.
+        const text = await res.text();
+        console.error("Failed to parse JSON, response text:", text);
+        throw new Error("Invalid JSON response from API");
+      }
+      if (!res.ok) {
+        alert(data.message || "Error claiming coupon");
+        return;
+      }
+      // Coupon claimed successfully; update UI state
+      setAssignedCoupon(data.coupon);
       setIsClaimed(true);
       setTimeLeft(totalTime);
-      setShowCard(true); // Show the rising card
-
-      // Start playing ticking sound
+      setShowCard(true);
+  
+      // Start playing ticking sound, etc.
       if (tickingSound.current) {
         tickingSound.current.loop = true;
-        tickingSound.current
-          .play()
-          .catch((err) => console.error("Audio play failed:", err));
+        tickingSound.current.play().catch((err) => console.error("Audio play failed:", err));
       }
-      // Hide the card after 5 seconds and then show slide text after card exit animation
       setTimeout(() => {
         setShowCard(false);
-        // Delay before showing slide text (adjust as needed)
         setTimeout(() => {
           setShowSlideText(true);
         }, 1000);
       }, 5000);
+    } catch (error) {
+      console.error("Error in claimCoupon:", error);
     }
   };
+  
 
   // Timer logic with ticking sound control
   useEffect(() => {
@@ -232,7 +304,7 @@ export default function Page() {
       setIsClaimed(false);
       setTimeout(() => {
         setShowSlideText(false);
-      }, 1000); 
+      }, 1000);
       if (tickingSound.current) {
         tickingSound.current.pause();
         tickingSound.current.currentTime = 0;
@@ -331,18 +403,19 @@ export default function Page() {
 
             {/* Claim Button */}
             <button
-              onClick={buttonClicked}
+              onClick={claimCoupon}
               disabled={isClaimed}
-              className={`h-72 w-72  p-3 text-xl text-black font-bold rounded-full shadow-lg transition-all cursor-pointer flex items-center justify-center text-center ${
+              className={`h-72 w-72 p-3 text-xl text-black font-bold rounded-full shadow-lg transition-all cursor-pointer flex items-center justify-center text-center ${
                 isClaimed
                   ? "bg-transparent text-white cursor-not-allowed"
                   : "bg-[#0AFF9D] hover:bg-[#036940] active:scale-95"
               }`}
             >
               {isClaimed
-                ? `${Math.floor(timeLeft / 60)}:${String(
-                    timeLeft % 60
-                  ).padStart(2, "0")}`
+                ? `${Math.floor(timeLeft / 60)}:${String(timeLeft % 60).padStart(
+                    2,
+                    "0"
+                  )}`
                 : "Claim Your Free Coupon Here"}
             </button>
           </div>
@@ -358,12 +431,15 @@ export default function Page() {
                 className="fixed bottom-0 left-25 p-4 text-white bg-[#0AFF9D] rounded shadow-lg h-[200px] w-[500px]"
               >
                 <p className="text-white font-extrabold text-5xl">
-                  Congratulations, <br></br>Coupon <br></br>Claimed!
+                  Congratulations, <br />
+                  Coupon {assignedCoupon} <br />
+                  Claimed!
                 </p>
               </motion.div>
             )}
           </AnimatePresence>
 
+          {/* Slide Text Animation */}
           <AnimatePresence>
             {showSlideText && (
               <motion.div
@@ -374,7 +450,7 @@ export default function Page() {
                 transition={{ duration: 1 }}
                 className="fixed bottom-5 right-10 p-4 bg-transparent text-white rounded shadow-lg h-[500px] w-[400px]"
               >
-                <div className="">
+                <div>
                   <p className="text-[#0AFF9D] text-6xl font-extrabold">
                     Wait for the cooldown,
                   </p>
